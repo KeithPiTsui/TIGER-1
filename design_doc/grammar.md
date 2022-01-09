@@ -14,32 +14,27 @@ naive grammar
 
 ```bash
 # tiger-program
-1: <tiger-program> -> let <declaration-segment> in <stat-seq> end
+1: <tiger-program> -> let <declaration-list> in <stat-seq> end
 
-# declaration-segment
-2: <declaration-segment> -> <type-declaration-list> <var-declaration-list> <funct-declaration-list>
+# declarations
+2: <declaration-list> -> <declaration> <declaration-list>
+3: <declaration-list> -> NULL
 
-3: <type-declaration-list> -> <type-declaration> <type-declaration-list>
-4: <type-declaration-list> -> NULL
-5: <var-declaration-list> -> <var-declaration> <var-declaration-list>
-6: <var-declaration-list> -> NULL
-7: <funct-declaration-list> -> <funct-declaration> <funct-declaration-list>
-8: <funct-declaration-list> -> NULL
+# declaration
+4: <declaration> -> <type-declaration>
+5: <declaration> -> <var-declaration>
+6: <declaration> -> <func-declaration>
 
 # type-declaration
 9: <type-declaration> -> type id = <type>;
 10: <type> -> <type-id>
 11: <type> -> array [INTLIT] of <type-id>
 12: <type> -> id
-
 13: <type-id> -> int
 14: <type-id> -> float
 
 # var-declaration
-15: <var-declaration> -> var <id-list> : <type> <optional-init>;
-16: <id-list> -> id <id-list-tail>
-17: <id-list-tail> -> , id <id-list-tail>
-18: <id-list-tail> -> NULL
+15: <var-declaration> -> var id : <type> <optional-init>;
 19: <optional-init> -> := <const>
 20: <optional-init> -> NULL
 
@@ -58,11 +53,13 @@ naive grammar
 30: <stat-seq-tail> -> <stat> <stat-seq-tail>
 31: <stat-seq-tail> -> NULL
 
-# stat
+# stat : no return value
+# if-stat
 32: <stat> -> if <expr> then <stat-seq> <stat-if-tail>
 33: <stat-if-tail> -> else <stat-seq> endif;
 34: <stat-if-tail> -> endif;
 
+# funct-or-assgin-stat
 35: <stat> -> id <stat-funct-or-assign>
 36: <stat-funct-or-assign> -> <lvalue-tail> := <stat-assign>;
 37: <stat-funct-or-assign> -> (<expr-list>);
@@ -81,16 +78,22 @@ naive grammar
 47: <stat-assign-tail> -> <mul-op> <factor> <stat-assign-tail>
 48: <stat-assign-tail> -> NULL
 
+# while-stat
 49: <stat> -> while <expr> do <stat-seq> enddo;
+
+# for-stat
 50: <stat> -> for id := <expr> to <expr> do <stat-seq> enddo;
 
-
+# break-stat
 51: <stat> -> break;
+
+# return-stat
 52: <stat> -> return <expr>;
 
+# let-stat
 53: <stat> -> let <declaration-segment> in <stat-seq> end
 
-# expr
+# expr : always be evaluated to a value
 54: <expr> -> <OR-expr> <stat-assign-tail>
 55: <OR-expr> -> <AND-expr> <stat-assign-tail>
 56: <AND-expr> -> <compare> <stat-assign-tail>

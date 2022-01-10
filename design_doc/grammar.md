@@ -29,108 +29,107 @@ naive grammar
 9: <type-declaration> -> type id = <type>;
 10: <type> -> <type-id>
 11: <type> -> array [INTLIT] of <type-id>
-12: <type> -> id
-13: <type-id> -> int
-14: <type-id> -> float
+12: <type> -> {id: <type-id>}
+13: <type-id> -> id
+14: <type-id> -> int
+15: <type-id> -> float
 
 # var-declaration
-15: <var-declaration> -> var id : <type> <optional-init>;
-19: <optional-init> -> := <const>
-20: <optional-init> -> NULL
+16: <var-declaration> -> var id : <type> <optional-init>;
+17: <optional-init> -> := <exp>
+18: <optional-init> -> NULL
 
 # funct-declaration
-21: <funct-declaration> -> function id (<param-list>) <ret-type> begin <stat-seq> end;
-22: <param-list> -> <param> <param-list-tail>
-23: <param-list> -> NULL
-24: <param-list-tail> -> , <param> <param-list-tail>
-25: <param-list-tail> -> NULL
-26: <ret-type> -> : <type>
-27: <ret-type> -> NULL
-28: <param> -> id : <type>
+19: <funct-declaration> -> function id (<param-list>) <ret-type> begin <stat-seq> end;
+20: <param-list> -> <param> <param-list-tail>
+21: <param-list> -> NULL
+22: <param-list-tail> -> , <param> <param-list-tail>
+23: <param-list-tail> -> NULL
+24: <ret-type> -> : <type>
+25: <ret-type> -> NULL
+26: <param> -> id : <type>
 
 # stat-seq
-29: <stat-seq> -> <stat> <stat-seq-tail>
-30: <stat-seq-tail> -> <stat> <stat-seq-tail>
-31: <stat-seq-tail> -> NULL
+27: <stat-seq> -> <stat> <stat-seq>
+28: <stat-seq> -> NULL
 
-# stat : no return value
+# stat : it is an expression without return value
 # if-stat
-32: <stat> -> if <expr> then <stat-seq> <stat-if-tail>
-33: <stat-if-tail> -> else <stat-seq> endif;
-34: <stat-if-tail> -> endif;
+29: <stat> -> if <expr> then <stat-seq> <stat-if-tail>
+30: <stat-if-tail> -> else <stat-seq> endif;
+31: <stat-if-tail> -> endif;
 
 # funct-or-assgin-stat
-35: <stat> -> id <stat-funct-or-assign>
-36: <stat-funct-or-assign> -> <lvalue-tail> := <stat-assign>;
-37: <stat-funct-or-assign> -> (<expr-list>);
+32: <stat> -> id <stat-funct-or-assign>
+33: <stat-funct-or-assign> -> <lvalue-tail> := <stat-assign>;
+34: <stat-funct-or-assign> -> (<expr-list>);
 
-38: <stat-assign> -> id <stat-assign-stuff>
-39: <stat-assign> -> (<expr>) <stat-assign-tail>
-40: <stat-assign> -> <const> <stat-assign-tail>
+35: <stat-assign> -> id <stat-assign-stuff>
+36: <stat-assign> -> (<expr>) <stat-assign-tail>
+37: <stat-assign> -> <const> <stat-assign-tail>
 
-41: <stat-assign-stuff> -> (<expr-list>)
-42: <stat-assign-stuff> -> <lvalue-tail> <stat-assign-tail>
+38: <stat-assign-stuff> -> (<expr-list>)
+39: <stat-assign-stuff> -> <lvalue-tail> <stat-assign-tail>
 
-43: <stat-assign-tail> -> <OR-op> <OR-expr> <stat-assign-tail>
-44: <stat-assign-tail> -> <AND-op> <AND-expr> <stat-assign-tail>
-45: <stat-assign-tail> -> <compare-op> <compare> <stat-assign-tail>
-46: <stat-assign-tail> -> <add-op> <term> <stat-assign-tail>
-47: <stat-assign-tail> -> <mul-op> <factor> <stat-assign-tail>
-48: <stat-assign-tail> -> NULL
+40: <stat-assign-tail> -> <OR-op> <OR-expr> <stat-assign-tail>
+41: <stat-assign-tail> -> <AND-op> <AND-expr> <stat-assign-tail>
+42: <stat-assign-tail> -> <compare-op> <compare> <stat-assign-tail>
+43: <stat-assign-tail> -> <add-op> <term> <stat-assign-tail>
+44: <stat-assign-tail> -> <mul-op> <factor> <stat-assign-tail>
+45: <stat-assign-tail> -> NULL
 
 # while-stat
-49: <stat> -> while <expr> do <stat-seq> enddo;
+46: <stat> -> while <expr> do <stat-seq> enddo;
 
 # for-stat
-50: <stat> -> for id := <expr> to <expr> do <stat-seq> enddo;
+47: <stat> -> for id := <expr> to <expr> do <stat-seq> enddo;
 
 # break-stat
-51: <stat> -> break;
+48: <stat> -> break;
 
 # return-stat
-52: <stat> -> return <expr>;
+49: <stat> -> return <expr>;
 
 # let-stat
-53: <stat> -> let <declaration-segment> in <stat-seq> end
+50: <stat> -> let <declaration-segment> in <stat-seq> end
 
 # expr : always be evaluated to a value
-54: <expr> -> <OR-expr> <stat-assign-tail>
-55: <OR-expr> -> <AND-expr> <stat-assign-tail>
-56: <AND-expr> -> <compare> <stat-assign-tail>
-57: <compare> -> <term> <stat-assign-tail>
-58: <term> -> <factor> <stat-assign-tail>
+51: <expr> -> <OR-expr> <stat-assign-tail>
+52: <OR-expr> -> <AND-expr> <stat-assign-tail>
+53: <AND-expr> -> <compare> <stat-assign-tail>
+54: <compare> -> <term> <stat-assign-tail>
+55: <term> -> <factor> <stat-assign-tail>
 
-
-59: <factor> -> (<expr>)
-60: <factor> -> <const>
-61: <factor> -> <lvalue>
+56: <factor> -> (<expr>)
+57: <factor> -> <const>
+58: <factor> -> <lvalue>
 
 # const
-62: <const> -> INTLIT
-63: <const> -> FLOATLIT
+59: <const> -> INTLIT
+60: <const> -> FLOATLIT
 
 # binary-operator
-64: <OR-op> -> |
-65: <AND-op> -> &
-66: <compare-op> -> <=
-67: <compare-op> -> >=
-68: <compare-op> -> <
-69: <compare-op> -> >
-70: <compare-op> -> <>
-71: <compare-op> -> =
-72: <add-op> -> -
-73: <add-op> -> +
-74: <mul-op> -> /
-75: <mul-op> -> *
+61: <OR-op> -> |
+62: <AND-op> -> &
+63: <compare-op> -> <=
+64: <compare-op> -> >=
+65: <compare-op> -> <
+66: <compare-op> -> >
+67: <compare-op> -> <>
+68: <compare-op> -> =
+69: <add-op> -> -
+70: <add-op> -> +
+71: <mul-op> -> /
+72: <mul-op> -> *
 
-76: <expr-list> -> NULL
-77: <expr-list> -> <expr> <expr-list-tail>
-78: <expr-list-tail> -> , <expr> <expr-list-tail>
-79: <expr-list-tail> -> NULL
+73: <expr-list> -> NULL
+74: <expr-list> -> <expr> <expr-list-tail>
+75: <expr-list-tail> -> , <expr> <expr-list-tail>
+76: <expr-list-tail> -> NULL
 
-80: <lvalue> -> id <lvalue-tail>
-81: <lvalue-tail> -> [<expr>]
-82: <lvalue-tail> -> NULL
+77: <lvalue> -> id <lvalue-tail>
+78: <lvalue-tail> -> [<expr>]
+79: <lvalue-tail> -> NULL
 ```
 
 ## First Sets
